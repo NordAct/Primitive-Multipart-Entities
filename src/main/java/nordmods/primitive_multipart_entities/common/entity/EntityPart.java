@@ -8,15 +8,14 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 public class EntityPart extends Entity {
     public final Entity owner;
@@ -41,11 +40,6 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean canBeHitByProjectile() {
-        return getWorld().isClient() || !super.canBeHitByProjectile() ? false : owner.canBeHitByProjectile();
-    }
-
-    @Override
     protected void initDataTracker() {}
 
     @Override
@@ -64,7 +58,7 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public @NotNull Packet<ClientPlayPacketListener> createSpawnPacket() {
+    public @NotNull Packet<?> createSpawnPacket() {
         throw new UnsupportedOperationException();
     }
 
@@ -192,12 +186,12 @@ public class EntityPart extends Entity {
         setRelativePos(x, y ,z, owner.getPitch(), owner.getYaw());
     }
 
-    public void setRelativePos(Vector3f vector3f) {
-        setRelativePos(vector3f.x, vector3f.y, vector3f.z);
+    public void setRelativePos(Vec3f vector3f) {
+        setRelativePos(vector3f.getX(), vector3f.getY(), vector3f.getZ());
     }
 
-    public void setRelativePos(Vector3f vector3f, float pitch, float yaw) {
-        setRelativePos(vector3f.x, vector3f.y, vector3f.z, pitch, yaw);
+    public void setRelativePos(Vec3f vector3f, float pitch, float yaw) {
+        setRelativePos(vector3f.getX(), vector3f.getY(), vector3f.getZ(), pitch, yaw);
     }
 
     public void setRelativePos(Vec3d vec3d) {
