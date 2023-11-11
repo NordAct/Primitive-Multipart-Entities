@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "primitive_multipart_entities",
+  "version": "${version}",
+  "name": "Primitive Multipart Entities",
+  "description": "Stuff for making basic multipart entites",
+  "authors": [
+    "Nord_Act"
+  ],
+  "contact": {
+    "repo": "https://github.com/NordAct/Primitive-Multipart-Entities"
+  },
+  "license": "MIT",
+  "icon": "assets/primitive_multipart_entities/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "nordmods.primitive_multipart_entities.client.PrimitiveMultipartEntitiesClient"
+    ],
+    "main": [
+      "nordmods.primitive_multipart_entities.PrimitiveMultipartEntities"
+    ]
+  },
+  "mixins": [
+    "primitive_multipart_entities.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

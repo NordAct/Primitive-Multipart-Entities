@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "nordmods.primitive_multipart_entities.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "common.EntityMixin",
+    "common.LivingEntityMixin",
+    "common.ServerWorldMixin",
+    "common.ThreadedAnvilChunkStorageMixin",
+    "common.WorldMixin"
+  ],
+  "client": [
+    "client.EntityRenderDispathcerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
