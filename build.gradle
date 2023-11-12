@@ -3,6 +3,9 @@ plugins {
     id 'fabric-loom' version '1.4-SNAPSHOT'
 }
 
+apply plugin: 'maven-publish'
+apply plugin: 'fabric-loom'
+
 version = project.mod_version
 group = project.maven_group
 
