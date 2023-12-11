@@ -14,10 +14,21 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
+/**
+ * <p>
+ * An entity that almost mimics behaviour of {@link net.minecraft.entity.boss.dragon.EnderDragonPart}.
+ * <p><p><p>
+ * Intended to be used as child entity of its owner. Can be used as it is or extended for more complex behaviour.
+ * Has its own hitbox, but has no AI, no collision and no impact on pathfinding of the owner entity.
+ * Attempting to deal damage to or interact with EntityPart results in calling respective methods for owner entity.
+ * <p><p><p>
+ * For an easy set up of position of child part use {@link EntityPart#setRelativePos(double, double, double, double, double, double, double, double)}
+ * <p><p><p>
+ * In order to work correctly, multipart entity must implement {@link MultipartEntity} and add parts in similar fashion to {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}
+ * <p>
+ */
 public class EntityPart extends Entity {
     public final Entity owner;
     private final EntityDimensions hitbox;
@@ -36,6 +47,9 @@ public class EntityPart extends Entity {
     protected void writeCustomDataToNbt(NbtCompound nbt) {}
 
     @Override
+    protected void initDataTracker() {}
+
+    @Override
     public boolean canHit() {
         return true;
     }
@@ -44,9 +58,6 @@ public class EntityPart extends Entity {
     public boolean canBeHitByProjectile() {
         return getWorld().isClient() || !super.canBeHitByProjectile() ? false : owner.canBeHitByProjectile();
     }
-
-    @Override
-    protected void initDataTracker() {}
 
     @Override
     public boolean damage(DamageSource source, float amount) {
@@ -59,21 +70,6 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean isPartOf(Entity entity) {
-        return this == entity || owner == entity;
-    }
-
-    @Override
-    public @NotNull Packet<ClientPlayPacketListener> createSpawnPacket() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean shouldSave() {
-        return false;
-    }
-
-    @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
         return owner.interact(player, hand);
     }
@@ -81,6 +77,21 @@ public class EntityPart extends Entity {
     @Override
     public boolean isAlive() {
         return owner.isAlive() && super.isAlive();
+    }
+
+    @Override
+    public boolean isPartOf(Entity entity) {
+        return this == entity || owner == entity;
+    }
+
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean shouldSave() {
+        return false;
     }
 
     @Nullable
@@ -174,37 +185,41 @@ public class EntityPart extends Entity {
         return false;
     }
 
-    public void setRelativePos(double x, double y, double z, float pitch, float yaw) {
+    /**
+     * <p>Sets position relative to position of the owner entity.</p>
+     * <p><b>x, y, z</b> - offsets relative to the owner's position (without accounting any rotations).</p>
+     * <p><b>centerX, centerY, centerZ</b> - offset from owner's position relative to which part will be placed. Not affected by rotations.</p>
+     * <p><b>pitch, yaw</b> - passed X and Y rotations (in degrees), relative to which offsets will be transformed.</p>
+     */
+    public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ, double pitch, double yaw) {
         lastRenderX = getX();
         lastRenderY = getY();
         lastRenderZ = getZ();
-        Vec3d rot = getRotationVector(pitch, yaw);
-        setPosition(owner.getX() + x * rot.z + z * rot.x,
-                owner.getY() + y,
-                owner.getZ() + z * rot.z - x * rot.x);
-        Vec3d vec3ds = new Vec3d(getX(), getY(),getZ());
-        prevX = vec3ds.x;
-        prevY = vec3ds.y;
-        prevZ = vec3ds.z;
+
+        //if you wonder how it moves - consider yourself an elliptic cylinder placed horizontally
+        double cosYaw = Math.cos(-yaw * 0.017453292);
+        double sinYaw = Math.sin(-yaw * 0.017453292);
+        double cosPitch = Math.cos(pitch * 0.017453292);
+        double sinPitch = Math.sin(pitch * 0.017453292);
+        setPosition(owner.getX() + centerX + z * sinYaw * cosPitch + x * cosYaw + y * sinYaw * sinPitch,
+                owner.getY() + centerY + z * -sinPitch + y * cosPitch,
+                owner.getZ() + centerZ + z * cosYaw * cosPitch + x * -sinYaw + y * cosYaw * sinPitch);
+
+        Vec3d newPos = new Vec3d(getX(), getY(),getZ());
+        prevX = newPos.x;
+        prevY = newPos.y;
+        prevZ = newPos.z;
+    }
+
+    public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ) {
+        setRelativePos(x, y ,z, centerX, centerY, centerZ, owner.getPitch(), owner.getYaw());
+    }
+
+    public void setRelativePos(double x, double y, double z, double pitch, double yaw) {
+        setRelativePos(x, y ,z, 0, 0, 0, pitch, yaw);
     }
 
     public void setRelativePos(double x, double y, double z) {
-        setRelativePos(x, y ,z, owner.getPitch(), owner.getYaw());
-    }
-
-    public void setRelativePos(Vector3f vector3f) {
-        setRelativePos(vector3f.x, vector3f.y, vector3f.z);
-    }
-
-    public void setRelativePos(Vector3f vector3f, float pitch, float yaw) {
-        setRelativePos(vector3f.x, vector3f.y, vector3f.z, pitch, yaw);
-    }
-
-    public void setRelativePos(Vec3d vec3d) {
-        setRelativePos(vec3d.x, vec3d.y, vec3d.z);
-    }
-
-    public void setRelativePos(Vec3d vec3d, float pitch, float yaw) {
-        setRelativePos(vec3d.x, vec3d.y, vec3d.z, pitch, yaw);
+        setRelativePos(x, y ,z, 0, 0, 0, owner.getPitch(), owner.getYaw());
     }
 }
