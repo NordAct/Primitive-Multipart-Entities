@@ -12,7 +12,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -200,10 +199,9 @@ public class EntityPart extends Entity {
                 owner.getY() + centerY + z * -sinPitch + y * cosPitch,
                 owner.getZ() + centerZ + z * cosYaw * cosPitch + x * -sinYaw + y * cosYaw * sinPitch);
 
-        Vec3d newPos = new Vec3d(getX(), getY(),getZ());
-        prevX = newPos.x;
-        prevY = newPos.y;
-        prevZ = newPos.z;
+        prevX = getX();
+        prevY = getY();
+        prevZ = getZ();
     }
 
     public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ) {
