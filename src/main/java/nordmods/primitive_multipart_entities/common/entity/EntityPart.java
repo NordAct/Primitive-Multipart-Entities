@@ -16,17 +16,12 @@ import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * <p>
- * An entity that almost mimics behaviour of {@link net.minecraft.entity.boss.dragon.EnderDragonPart}.
- * <p><p><p>
- * Intended to be used as child entity of its owner. Can be used as it is or extended for more complex behaviour.
+ * <p>An entity that almost mimics behaviour of {@link net.minecraft.entity.boss.dragon.EnderDragonPart}.</p>
+ * <p>Intended to be used as child entity of its owner. Can be used as it is or extended for more complex behaviour.
  * Has its own hitbox, but has no AI, no collision and no impact on pathfinding of the owner entity.
- * Attempting to deal damage to or interact with EntityPart results in calling respective methods for owner entity.
- * <p><p><p>
- * For an easy set up of position of child part use {@link EntityPart#setRelativePos(double, double, double, double, double, double, double, double)}
- * <p><p><p>
- * In order to work correctly, multipart entity must implement {@link MultipartEntity} and add parts in similar fashion to {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}
- * <p>
+ * Attempting to deal damage to or interact with EntityPart results in calling respective methods for owner entity.</p>
+ * <p>For an easy set up of position of child part use {@link EntityPart#setRelativePos(double, double, double, double, double, double, double, double)}.</p>
+ * <p>In order to work correctly, multipart entity must implement {@link MultipartEntity} and add parts in similar fashion to {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}.</p>
  */
 public class EntityPart extends Entity {
     public final Entity owner;
