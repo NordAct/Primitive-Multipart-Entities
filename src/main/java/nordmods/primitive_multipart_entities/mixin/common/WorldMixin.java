@@ -22,19 +22,19 @@ public abstract class WorldMixin implements WorldMultipartHelper {
     @Unique
     private final Int2ObjectMap<EntityPart> URDragonParts = new Int2ObjectOpenHashMap<>();
 
-    public Int2ObjectMap<EntityPart> getPartMap() {
+    public Int2ObjectMap<EntityPart> getPMEPartMap() {
         return URDragonParts;
     }
 
     @Inject(method = "getOtherEntities", at = @At("TAIL"))
     private void getEntityParts(Entity except, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
-        for (EntityPart part : getParts())
+        for (EntityPart part : getPMEParts())
             if (part != null && part != except && part.getBoundingBox().intersects(box) && predicate.test(part)) cir.getReturnValue().add(part);
     }
 
     @Inject(method = "getEntitiesByType", at = @At("TAIL"))
     private <T extends Entity> void getEntityPartsByType(TypeFilter<Entity, T> filter, Box box, Predicate<? super T> predicate, CallbackInfoReturnable<List<T>> cir) {
-        for (EntityPart part : getParts()) {
+        for (EntityPart part : getPMEParts()) {
             T type = filter.downcast(part);
             if (type != null && part.getBoundingBox().intersects(box) && predicate.test(type)) cir.getReturnValue().add(type);
         }

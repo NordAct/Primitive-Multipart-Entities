@@ -6,9 +6,9 @@ import nordmods.primitive_multipart_entities.common.entity.EntityPart;
 import java.util.Collection;
 
 public interface WorldMultipartHelper {
-    default Collection<EntityPart> getParts() {
-        return getPartMap().values();
+    default Collection<EntityPart> getPMEParts() {
+        return getPMEPartMap().values();
     }
 
-    Int2ObjectMap<EntityPart> getPartMap();
+    Int2ObjectMap<EntityPart> getPMEPartMap();
 }
