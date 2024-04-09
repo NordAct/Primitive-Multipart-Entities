@@ -12,13 +12,13 @@ public class PrimitiveMultipartEntities implements ModInitializer {
     public void onInitialize() {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (entity instanceof MultipartEntity multipartEntity) {
-                Int2ObjectMap<EntityPart> partMap = ((WorldMultipartHelper)world).getPartMap();
+                Int2ObjectMap<EntityPart> partMap = ((WorldMultipartHelper)world).getPMEPartMap();
                 for (EntityPart part : multipartEntity.getParts()) partMap.put(part.getId(), part);
             }
         });
         ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
             if (entity instanceof MultipartEntity multipartEntity) {
-                Int2ObjectMap<EntityPart> partMap = ((WorldMultipartHelper)world).getPartMap();
+                Int2ObjectMap<EntityPart> partMap = ((WorldMultipartHelper)world).getPMEPartMap();
                 for (EntityPart part : multipartEntity.getParts()) partMap.remove(part.getId());
             }
         });
