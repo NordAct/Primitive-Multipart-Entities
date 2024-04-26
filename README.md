@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.20-SNAPSHOT")
+   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.20.5-SNAPSHOT")
 }
 ```
 This will grab latest commit on 1.20 branch. If you wanna be more specific on which commit to grab or just wanna know how Jitpack works, visit https://jitpack.io/ for more info.
@@ -27,7 +27,7 @@ Each part should be declared as class field and then be put in an array that wil
 private final EntityPart part1 = new EntityPart(this, 1, 1);
 private final EntityPart part2 = new EntityPart(this, 2, 1);
 private final EntityPart part3 = new EntityPart(this, 3.2f, 1.2f);
-private final EntityPart[] parts = new EntityPart[]{part1, part2, part3}
+private final EntityPart[] parts = new EntityPart[]{part1, part2, part3};
 ```
 `EntityPart` is... entity part. It takes 3 parameters: owner, width and height. You can use it as it is or extend and change for your needs.
 
