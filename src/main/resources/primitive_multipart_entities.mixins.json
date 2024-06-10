@@ -7,7 +7,7 @@
     "common.EntityMixin",
     "common.LivingEntityMixin",
     "common.ServerWorldMixin",
-    "common.ThreadedAnvilChunkStorageMixin",
+    "common.ServerChunkLoadingManagerMixin",
     "common.WorldMixin"
   ],
   "client": [

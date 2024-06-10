@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class EntityRenderDispathcerMixin {
 
     @Inject(method = "renderHitbox", at = @At("HEAD"))
-    private static void renderDragonPart(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta, CallbackInfo ci){
+    private static void renderDragonPart(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta, float red, float green, float blue, CallbackInfo ci){
         if (entity instanceof MultipartEntity multipartEntity) {
             double x = -MathHelper.lerp(tickDelta, entity.lastRenderX, entity.getX());
             double y = -MathHelper.lerp(tickDelta, entity.lastRenderY, entity.getY());

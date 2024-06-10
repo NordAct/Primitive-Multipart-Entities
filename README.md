@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.20.5-SNAPSHOT")
+   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.21-SNAPSHOT")
 }
 ```
 This will grab latest commit on 1.20 branch. If you wanna be more specific on which commit to grab or just wanna know how Jitpack works, visit https://jitpack.io/ for more info.
