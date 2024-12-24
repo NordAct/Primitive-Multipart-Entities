@@ -56,14 +56,8 @@ public class EntityPart extends Entity {
         return getWorld().isClient() || !super.canBeHitByProjectile() ? false : owner.canBeHitByProjectile();
     }
 
-    @Override
-    public boolean damage(DamageSource source, float amount) {
-        return getWorld().isClient() || isInvulnerableTo(source) ? false : owner.damage(source, amount);
-    }
-
-    @Override
-    public boolean isInvulnerableTo(DamageSource damageSource) {
-        return owner.isInvulnerableTo(damageSource);
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        return isAlwaysInvulnerableTo(source) ? false : this.owner.damage(world,  source, amount);
     }
 
     @Override
@@ -108,7 +102,7 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean isTeammate(Entity entity) {
+    public boolean isInSameTeam(Entity entity) {
         return owner.isTeammate(entity);
     }
 

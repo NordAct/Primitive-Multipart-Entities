@@ -1,6 +1,7 @@
 package nordmods.primitive_multipart_entities.mixin.client;
 
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,7 +30,7 @@ public abstract class EntityRenderDispathcerMixin {
                 double h = y + MathHelper.lerp(tickDelta, part.lastRenderY, part.getY());
                 double i = z + MathHelper.lerp(tickDelta, part.lastRenderZ, part.getZ());
                 matrices.translate(g, h, i);
-                WorldRenderer.drawBox(matrices, vertices,
+                VertexRendering.drawBox(matrices, vertices,
                         part.getBoundingBox().offset(-part.getX(), -part.getY(), -part.getZ()), 0.25F, 1.0F, 0.0F, 1.0F);
                 matrices.pop();
             }
