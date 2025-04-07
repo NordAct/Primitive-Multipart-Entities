@@ -196,9 +196,9 @@ public class EntityPart extends Entity {
                 owner.getY() + centerY + z * -sinPitch + y * cosPitch,
                 owner.getZ() + centerZ + z * cosYaw * cosPitch + x * -sinYaw + y * cosYaw * sinPitch);
 
-        prevX = getX();
-        prevY = getY();
-        prevZ = getZ();
+        lastX = getX();
+        lastY = getY();
+        lastZ = getZ();
     }
 
     public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ) {

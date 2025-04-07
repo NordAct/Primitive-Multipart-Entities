@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin implements WorldMultipartHelper {
-    @Inject(method = "getDragonPart", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getEntityOrDragonPart", at = @At("RETURN"), cancellable = true)
     public void getEntityParts(int id, CallbackInfoReturnable<Entity> cir) {
         Entity entity = cir.getReturnValue();
         if (entity == null) cir.setReturnValue(getPMEPartMap().get(id));

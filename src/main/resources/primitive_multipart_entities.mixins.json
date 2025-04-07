@@ -6,12 +6,13 @@
   "mixins": [
     "common.EntityMixin",
     "common.LivingEntityMixin",
-    "common.ServerWorldMixin",
     "common.ServerChunkLoadingManagerMixin",
+    "common.ServerWorldMixin",
     "common.WorldMixin"
   ],
   "client": [
-    "client.EntityRenderDispathcerMixin"
+    "client.EntityRendererMixin",
+    "client.LivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
