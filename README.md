@@ -10,10 +10,10 @@ repositories {
 }
 
 dependencies {
-   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.21.4-SNAPSHOT")
+   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.21.5-SNAPSHOT")
 }
 ```
-This will grab latest commit on 1.21.4 branch. If you wanna be more specific on which commit to grab or just wanna know how Jitpack works, visit https://jitpack.io/ for more info.
+This will grab latest commit on 1.21.5 branch. If you wanna be more specific on which commit to grab or just wanna know how Jitpack works, visit https://jitpack.io/ for more info.
 
 ## Making multipart entity
 To make multipart entity, you need first to make it implement `MultipartEntity` interface. Then you need to implement `getParts()` method that will return all parts this entity has as an array:
