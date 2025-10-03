@@ -8,11 +8,12 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
@@ -30,17 +31,11 @@ public class EntityPart extends Entity {
     private final EntityDimensions hitbox;
 
     public EntityPart(Entity owner, float width, float height) {
-        super(owner.getType(), owner.getWorld());
+        super(owner.getType(), owner.getEntityWorld());
         this.owner = owner;
         this.hitbox = EntityDimensions.changing(width, height);
         this.calculateDimensions();
     }
-
-    @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {}
-
-    @Override
-    protected void writeCustomDataToNbt(NbtCompound nbt) {}
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
@@ -52,8 +47,18 @@ public class EntityPart extends Entity {
     }
 
     @Override
+    protected void readCustomData(ReadView view) {
+
+    }
+
+    @Override
+    protected void writeCustomData(WriteView view) {
+
+    }
+
+    @Override
     public boolean canBeHitByProjectile() {
-        return getWorld().isClient() || !super.canBeHitByProjectile() ? false : owner.canBeHitByProjectile();
+        return getEntityWorld().isClient() || !super.canBeHitByProjectile() ? false : owner.canBeHitByProjectile();
     }
 
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
@@ -97,8 +102,8 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean startRiding(Entity vehicle, boolean force) {
-        return owner.startRiding(vehicle, force);
+    public boolean startRiding(Entity vehicle, boolean force, boolean emitEvent) {
+        return owner.startRiding(vehicle, force, emitEvent);
     }
 
     @Override
@@ -122,8 +127,8 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean onKilledOther(ServerWorld level, LivingEntity entity) {
-        return owner.onKilledOther(level, entity);
+    public boolean onKilledOther(ServerWorld world, LivingEntity other, DamageSource damageSource) {
+        return owner.onKilledOther(world, other, damageSource);
     }
 
     @Override
