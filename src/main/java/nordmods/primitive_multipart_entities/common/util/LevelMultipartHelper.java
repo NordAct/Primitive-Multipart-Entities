@@ -5,10 +5,10 @@ import nordmods.primitive_multipart_entities.common.entity.EntityPart;
 
 import java.util.Collection;
 
-public interface WorldMultipartHelper {
+public interface LevelMultipartHelper {
     default Collection<EntityPart> getPMEParts() {
-        return getPMEPartMap().values();
+        return primitive_Multipart_Entities$getPartMap().values();
     }
 
-    Int2ObjectMap<EntityPart> getPMEPartMap();
+    Int2ObjectMap<EntityPart> primitive_Multipart_Entities$getPartMap();
 }

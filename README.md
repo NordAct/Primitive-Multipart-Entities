@@ -1,8 +1,9 @@
 # Primitive-Multipart-Entities
-Some stuff for basic multipart entities making for Fabric.
+A small library for making multipart entities within Fabric ecosystem. Requires Fabric API
 
 # Usage
 ## Adding as dependency
+### Via Jitpack
 Use Jitpack to add this in your project. This goes to build.gragle:
 ```gradle
 repositories {
@@ -10,10 +11,25 @@ repositories {
 }
 
 dependencies {
-   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:1.21.9-SNAPSHOT")
+   modImplementation include ("com.github.NordAct:Primitive-Multipart-Entities:{current-branch-name}-SNAPSHOT")
 }
 ```
-This will grab latest commit on 1.21.11 branch. If you want to be more specific on which commit to grab or just wanna know how Jitpack works, visit https://jitpack.io/ for more info.
+Replace `{current-branch-name}` with branch you want to use. This will grab latest commit on specified branch. If you want to be more specific on which commit to grab or just wanna know how Jitpack works, visit https://jitpack.io/ for more info.
+
+### As Local Library
+1. Get release you want from GitHub releases (or download repository and compile locally if one you want isn't there)
+2. Create directory in root of your project (for simplicity we'll call it `libs`) and place .jar file in it
+3. Add the following to your build.gragle:
+```gradle
+repositories {
+      flatDir(dirs: "libs") //libs is directory in root of your project from step 2
+}
+
+dependencies {
+   modImplementation include ("nordmods.primitive_multipart_entities:Primitive-Multipart-Entities:{version}")
+}
+```
+Replace `{version}` with version you working with.
 
 ## Making multipart entity
 To make multipart entity, you need first to make it implement `MultipartEntity` interface. Then you need to implement `getParts()` method that will return all parts this entity has as an array:

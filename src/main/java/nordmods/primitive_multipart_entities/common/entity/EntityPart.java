@@ -1,72 +1,76 @@
 package nordmods.primitive_multipart_entities.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
+//javadoc
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+
 /**
- * <p>An entity that almost mimics behaviour of {@link net.minecraft.entity.boss.dragon.EnderDragonPart}.</p>
+ * <p>An entity that almost mimics behaviour of {@link EnderDragonPart}.</p>
  * <p>Intended to be used as child entity of its owner. Can be used as it is or extended for more complex behaviour.
  * Has its own hitbox, but has no AI, no collision and no impact on pathfinding of the owner entity.
  * Attempting to deal damage to or interact with EntityPart results in calling respective methods for owner entity.</p>
  * <p>For an easy set up of position of child part use {@link EntityPart#setRelativePos(double, double, double, double, double, double, double, double)}.</p>
- * <p>In order to work correctly, multipart entity must implement {@link MultipartEntity} and add parts in similar fashion to {@link net.minecraft.entity.boss.dragon.EnderDragonEntity}.</p>
+ * <p>In order to work correctly, multipart entity must implement {@link MultipartEntity} and add parts in similar fashion to {@link EnderDragon}.</p>
  */
 public class EntityPart extends Entity {
     public final Entity owner;
     private final EntityDimensions hitbox;
 
     public EntityPart(Entity owner, float width, float height) {
-        super(owner.getType(), owner.getEntityWorld());
+        super(owner.getType(), owner.level());
         this.owner = owner;
-        this.hitbox = EntityDimensions.changing(width, height);
-        this.calculateDimensions();
+        this.hitbox = EntityDimensions.scalable(width, height);
+        this.refreshDimensions();
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 
     @Override
-    public boolean canHit() {
+    public boolean isPickable() {
         return true;
     }
 
     @Override
-    protected void readCustomData(ReadView view) {
+    protected void readAdditionalSaveData(ValueInput view) {
 
     }
 
     @Override
-    protected void writeCustomData(WriteView view) {
+    protected void addAdditionalSaveData(ValueOutput view) {
 
     }
 
     @Override
     public boolean canBeHitByProjectile() {
-        return getEntityWorld().isClient() || !super.canBeHitByProjectile() ? false : owner.canBeHitByProjectile();
+        return !level().isClientSide() && super.canBeHitByProjectile() && owner.canBeHitByProjectile();
     }
 
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
-        return isAlwaysInvulnerableTo(source) ? false : this.owner.damage(world,  source, amount);
+    public boolean hurtServer(ServerLevel world, DamageSource source, float amount) {
+        return !isInvulnerableToBase(source) && this.owner.hurtServer(world, source, amount);
     }
 
     @Override
-    public ActionResult interact(PlayerEntity player, Hand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         return owner.interact(player, hand);
     }
 
@@ -76,28 +80,28 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean isPartOf(Entity entity) {
+    public boolean is(Entity entity) {
         return this == entity || owner == entity;
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entityTrackerEntry) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean shouldSave() {
+    public boolean shouldBeSaved() {
         return false;
     }
 
     @Nullable
     @Override
-    public ItemStack getPickBlockStack() {
-        return this.owner.getPickBlockStack();
+    public ItemStack getPickResult() {
+        return this.owner.getPickResult();
     }
 
     @Override
-    public EntityDimensions getDimensions(EntityPose pose) {
+    public EntityDimensions getDimensions(Pose pose) {
         return hitbox;
     }
 
@@ -107,8 +111,8 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean isInSameTeam(Entity entity) {
-        return owner.isTeammate(entity);
+    public boolean considersEntityAsAlly(Entity entity) {
+        return owner.isAlliedTo(entity);
     }
 
     @Override
@@ -117,18 +121,18 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean isGlowing() {
-        return owner.isGlowing();
+    public boolean isCurrentlyGlowing() {
+        return owner.isCurrentlyGlowing();
     }
 
     @Override
-    public boolean isInvisibleTo(PlayerEntity player) {
+    public boolean isInvisibleTo(Player player) {
         return owner.isInvisibleTo(player);
     }
 
     @Override
-    public boolean onKilledOther(ServerWorld world, LivingEntity other, DamageSource damageSource) {
-        return owner.onKilledOther(world, other, damageSource);
+    public boolean killedEntity(ServerLevel world, LivingEntity other, DamageSource damageSource) {
+        return owner.killedEntity(world, other, damageSource);
     }
 
     @Override
@@ -137,8 +141,8 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean handleAttack(Entity entity) {
-        return owner.handleAttack(entity);
+    public boolean skipAttackInteraction(Entity entity) {
+        return owner.skipAttackInteraction(entity);
     }
 
     @Override
@@ -147,37 +151,37 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public boolean isInPose(EntityPose pose) {
-        return owner.isInPose(pose);
+    public boolean hasPose(Pose pose) {
+        return owner.hasPose(pose);
     }
 
     @Override
-    public boolean hasPortalCooldown() {
-        return owner.hasPortalCooldown();
+    public boolean isOnPortalCooldown() {
+        return owner.isOnPortalCooldown();
     }
 
     @Override
-    public boolean isOnGround() {
-        return owner.isOnGround();
+    public boolean onGround() {
+        return owner.onGround();
     }
 
     @Override
-    public boolean hasNoGravity() {
-        return owner.hasNoGravity();
+    public boolean isNoGravity() {
+        return owner.isNoGravity();
     }
 
     @Override
-    public boolean occludeVibrationSignals() {
+    public boolean dampensVibrations() {
         return true;
     }
 
     @Override
-    public boolean isFireImmune() {
-        return owner.isFireImmune();
+    public boolean fireImmune() {
+        return owner.fireImmune();
     }
 
     @Override
-    public boolean shouldSpawnSprintingParticles() {
+    public boolean canSpawnSprintParticle() {
         return false;
     }
 
@@ -187,27 +191,21 @@ public class EntityPart extends Entity {
      * <p><b>centerX, centerY, centerZ</b> - offset from owner's position relative to which part will be placed. Not affected by rotations.</p>
      * <p><b>pitch, yaw</b> - passed X and Y rotations (in degrees), relative to which offsets will be transformed.</p>
      */
-    public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ, double pitch, double yaw) {
-        lastRenderX = getX();
-        lastRenderY = getY();
-        lastRenderZ = getZ();
+    public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ, double rotX, double rotY) {
+        setOldPos();
 
         //if you wonder how it moves - consider yourself an elliptic cylinder placed horizontally
-        double cosYaw = Math.cos(-yaw * 0.017453292);
-        double sinYaw = Math.sin(-yaw * 0.017453292);
-        double cosPitch = Math.cos(pitch * 0.017453292);
-        double sinPitch = Math.sin(pitch * 0.017453292);
-        setPosition(owner.getX() + centerX + z * sinYaw * cosPitch + x * cosYaw + y * sinYaw * sinPitch,
+        double cosYaw = Math.cos(-rotY * 0.017453292);
+        double sinYaw = Math.sin(-rotY * 0.017453292);
+        double cosPitch = Math.cos(rotX * 0.017453292);
+        double sinPitch = Math.sin(rotX * 0.017453292);
+        setPos(owner.getX() + centerX + z * sinYaw * cosPitch + x * cosYaw + y * sinYaw * sinPitch,
                 owner.getY() + centerY + z * -sinPitch + y * cosPitch,
                 owner.getZ() + centerZ + z * cosYaw * cosPitch + x * -sinYaw + y * cosYaw * sinPitch);
-
-        lastX = getX();
-        lastY = getY();
-        lastZ = getZ();
     }
 
     public void setRelativePos(double x, double y, double z, double centerX, double centerY, double centerZ) {
-        setRelativePos(x, y ,z, centerX, centerY, centerZ, owner.getPitch(), owner.getYaw());
+        setRelativePos(x, y ,z, centerX, centerY, centerZ, owner.getXRot(), owner.getYRot());
     }
 
     public void setRelativePos(double x, double y, double z, double pitch, double yaw) {
@@ -215,6 +213,6 @@ public class EntityPart extends Entity {
     }
 
     public void setRelativePos(double x, double y, double z) {
-        setRelativePos(x, y ,z, 0, 0, 0, owner.getPitch(), owner.getYaw());
+        setRelativePos(x, y ,z, 0, 0, 0, owner.getXRot(), owner.getYRot());
     }
 }

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "testmod",
+  "version": "1",
+  "name": "Primitive Multipart Entities Testmod",
+  "description": "Test mod",
+  "authors": [
+    "Nord_Act"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "nordmods.testmod.Testmod"
+    ]
+  },
+  "mixins": [
+    "testmod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "primitive_multipart_entities": "*",
+    "minecraft": "*"
+  }
+}

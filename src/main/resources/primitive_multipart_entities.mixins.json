@@ -2,17 +2,17 @@
   "required": true,
   "minVersion": "0.8",
   "package": "nordmods.primitive_multipart_entities.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "common.EntityMixin",
     "common.LivingEntityMixin",
-    "common.ServerChunkLoadingManagerMixin",
-    "common.ServerWorldMixin",
-    "common.WorldMixin"
+    "common.ChunkMapMixin",
+    "common.ServerLevelMixin",
+    "common.LevelMixin"
   ],
   "client": [
-    "client.EntityRendererMixin",
-    "client.LivingEntityRendererMixin"
+    "client.EntityHitboxDebugRendererMixin",
+    "client.EntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
