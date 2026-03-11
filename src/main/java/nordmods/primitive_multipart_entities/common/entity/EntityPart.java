@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 //javadoc
@@ -70,8 +71,8 @@ public class EntityPart extends Entity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
-        return owner.interact(player, hand);
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+        return owner.interact(player, hand, location);
     }
 
     @Override
