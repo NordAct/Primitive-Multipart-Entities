@@ -216,4 +216,11 @@ public class EntityPart extends Entity {
     public void setRelativePos(double x, double y, double z) {
         setRelativePos(x, y ,z, 0, 0, 0, owner.getXRot(), owner.getYRot());
     }
+
+    /**
+     * @return if should return part owner when entity is getting picked
+     */
+    public boolean shouldReturnOwner() {
+        return true;
+    }
 }

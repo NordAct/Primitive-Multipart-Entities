@@ -4,11 +4,12 @@
   "package": "nordmods.primitive_multipart_entities.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "common.EntityMixin",
-    "common.LivingEntityMixin",
     "common.ChunkMapMixin",
-    "common.ServerLevelMixin",
-    "common.LevelMixin"
+    "common.EntityHitResultMixin",
+    "common.EntityMixin",
+    "common.LevelMixin",
+    "common.LivingEntityMixin",
+    "common.ServerLevelMixin"
   ],
   "client": [
     "client.EntityHitboxDebugRendererMixin",
