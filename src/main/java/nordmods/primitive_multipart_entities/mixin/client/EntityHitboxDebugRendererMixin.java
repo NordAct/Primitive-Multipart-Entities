@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EntityHitboxDebugRenderer.class)
 public abstract class EntityHitboxDebugRendererMixin {
     @Inject(method = "showHitboxes", at = @At("TAIL"))
-    private void showMultipartEntityBoxes(Entity entity, float f, boolean bl, CallbackInfo ci) {
+    private void showMultipartEntityBoxes(Entity entity, float partialTicks, boolean isServerEntity, CallbackInfo ci) {
         if (entity instanceof MultipartEntity multipart) {
             for (EntityPart part : multipart.getParts()) {
                 Gizmos.cuboid(
-                        part.getBoundingBox().move(part.getPosition(f).subtract(part.position())),
+                        part.getBoundingBox().move(part.getPosition(partialTicks).subtract(part.position())),
                         GizmoStyle.stroke(ARGB.colorFromFloat(1.0F, 0.25F, 1.0F, 0.0F))
                 );
             }

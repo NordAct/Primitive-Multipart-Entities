@@ -14,13 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity> {
     @Shadow
-    public abstract boolean shouldRender(T entity, Frustum frustum, double d, double e, double f);
+    public abstract boolean shouldRender(T entity, Frustum culler, double camX, double camY, double camZ);
 
     @Inject(method = "shouldRender", at = @At(value = "RETURN", ordinal = 4), cancellable = true)
-    private void checkEntityPartsVisibility(T entity, Frustum frustum, double d, double e, double f, CallbackInfoReturnable<Boolean> cir) {
+    private void checkEntityPartsVisibility(T entity, Frustum culler, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
         if (entity instanceof MultipartEntity multipart) {
             for (EntityPart part : multipart.getParts()) {
-                if (frustum.isVisible(part.getBoundingBox().inflate(0.5))) {
+                if (culler.isVisible(part.getBoundingBox().inflate(0.5))) {
                     cir.setReturnValue(true);
                     return;
                 }

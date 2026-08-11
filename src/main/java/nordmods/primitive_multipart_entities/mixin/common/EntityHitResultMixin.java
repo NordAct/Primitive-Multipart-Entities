@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(EntityHitResult.class)
 public class EntityHitResultMixin {
-    @ModifyVariable(method = "<init>(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"), argsOnly = true)
-    private static Entity checkForPartOwner(Entity value) {
-        if (value instanceof EntityPart part && part.shouldReturnOwner()) return part.owner;
-        return value;
+    @ModifyVariable(method = "<init>(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"), argsOnly = true, name = "entity")
+    private static Entity checkForPartOwner(Entity entity) {
+        if (entity instanceof EntityPart part && part.shouldReturnOwner()) return part.owner;
+        return entity;
     }
 }
