@@ -2,7 +2,7 @@ package nordmods.primitive_multipart_entities.mixin.common;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.util.AbortableIterationConsumer;
+import net.minecraft.util.Continuation;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.entity.LevelEntityGetterAdapter;
@@ -51,33 +51,33 @@ public abstract class LevelMixin implements LevelMultipartHelper {
                         }
                     }
                 }
-                return AbortableIterationConsumer.Continuation.CONTINUE;
+                return Continuation.CONTINUE;
             });
         }
     }
 
     @Inject(method = "lambda$getEntities$1", at = @At(value = "RETURN", ordinal = 2), cancellable = true)
-    private static <T extends Entity> void getEntityPartsByTypeGetEntities1(Predicate<T> selector, List<T> output, int maxResults, EntityTypeTest<Entity, T> type, Entity e, CallbackInfoReturnable<AbortableIterationConsumer.Continuation> cir) {
+    private static <T extends Entity> void getEntityPartsByTypeGetEntities1(Predicate<T> selector, List<T> output, int maxResults, EntityTypeTest<Entity, T> type, Entity e, CallbackInfoReturnable<Continuation> cir) {
         if (e instanceof MultipartEntity multipart) {
             for (EntityPart part : multipart.getParts()) {
                 T cast = type.tryCast(part);
                 if (cast == null || !selector.test(cast)) continue;
                 output.add(cast);
                 if (output.size() >= maxResults) {
-                    cir.setReturnValue(AbortableIterationConsumer.Continuation.ABORT);
+                    cir.setReturnValue(Continuation.ABORT);
                 }
             }
         }
     }
 
     @Inject(method = "lambda$hasEntities$0", at = @At(value = "RETURN", ordinal = 2), cancellable = true)
-    private static <T extends Entity> void getEntityPartsByTypeHasEntities0(Predicate<T> selector, MutableBoolean hasEntities, EntityTypeTest<Entity, T> type, Entity e, CallbackInfoReturnable<AbortableIterationConsumer.Continuation> cir) {
+    private static <T extends Entity> void getEntityPartsByTypeHasEntities0(Predicate<T> selector, MutableBoolean hasEntities, EntityTypeTest<Entity, T> type, Entity e, CallbackInfoReturnable<Continuation> cir) {
         if (e instanceof MultipartEntity multipart) {
             for (EntityPart part : multipart.getParts()) {
                 T cast = type.tryCast(part);
                 if (cast == null || !selector.test(cast)) continue;
                 hasEntities.setTrue();
-                cir.setReturnValue(AbortableIterationConsumer.Continuation.ABORT);
+                cir.setReturnValue(Continuation.ABORT);
             }
         }
     }
